@@ -17,5 +17,15 @@ haveQuota := eq.Claim()
 eq.Notify(true, 10)
 ```
 
+## Benchmark results
+```go
+BenchmarkEqualizerShortClaimStep-8      10000000               144 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerShortClaimRandom-8    10000000               155 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerShortNotify-8          5000000               266 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerLongClaimStep-8       10000000               143 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerLongClaimRandom-8     10000000               146 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerLongNotify-8             30000             48446 ns/op               0 B/op          0 allocs/op
+```
+
 ## License
 Licensed under the MIT License.
