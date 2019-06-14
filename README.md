@@ -1,4 +1,7 @@
 # equalizer
+[![GoDoc](https://godoc.org/github.com/reugn/equalizer?status.svg)](https://godoc.org/github.com/reugn/equalizer)
+[![Go Report Card](https://goreportcard.com/badge/github.com/reugn/equalizer)](https://goreportcard.com/report/github.com/reugn/equalizer)
+
 API call rate limiter
 
 ## About
