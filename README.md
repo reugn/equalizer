@@ -1,6 +1,8 @@
 # equalizer
+[![Build Status](https://travis-ci.org/reugn/equalizer.svg?branch=master)](https://travis-ci.org/reugn/equalizer)
 [![GoDoc](https://godoc.org/github.com/reugn/equalizer?status.svg)](https://godoc.org/github.com/reugn/equalizer)
 [![Go Report Card](https://goreportcard.com/badge/github.com/reugn/equalizer)](https://goreportcard.com/report/github.com/reugn/equalizer)
+[![codecov](https://codecov.io/gh/reugn/equalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/reugn/equalizer)
 
 Rate limiters collection
 
@@ -46,7 +48,7 @@ haveQuota := slider.Claim()
 ```
 
 ## Token bucket
-Simple token bucket rate limiter with refill interval.
+Custom implementation for token bucket rate limiter with refill interval.
 
 ### Usage
 ```go
