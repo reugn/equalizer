@@ -1,62 +1,65 @@
-# equalizer
-[![Build Status](https://travis-ci.org/reugn/equalizer.svg?branch=master)](https://travis-ci.org/reugn/equalizer)
-[![GoDoc](https://godoc.org/github.com/reugn/equalizer?status.svg)](https://godoc.org/github.com/reugn/equalizer)
-[![Go Report Card](https://goreportcard.com/badge/github.com/reugn/equalizer)](https://goreportcard.com/report/github.com/reugn/equalizer)
-[![codecov](https://codecov.io/gh/reugn/equalizer/branch/master/graph/badge.svg)](https://codecov.io/gh/reugn/equalizer)
+<h1 align="center">equalizer</h1>
+<p align="center">
+  <a href="https://travis-ci.org/reugn/equalizer"><img src="https://travis-ci.org/reugn/equalizer.svg?branch=master"></a>
+  <a href="https://pkg.go.dev/github.com/reugn/equalizer"><img src="https://pkg.go.dev/badge/github.com/reugn/equalizer"></a>
+  <a href="https://goreportcard.com/report/github.com/reugn/equalizer"><img src="https://goreportcard.com/badge/github.com/reugn/equalizer"></a>
+  <a href="https://codecov.io/gh/reugn/equalizer"><img src="https://codecov.io/gh/reugn/equalizer/branch/master/graph/badge.svg"></a>
+</p>
+<p align="center">A rate limiters package for Go.</p>
 
-Rate limiters collection
-
-## About
-API Quota is a very valuable resource. And while using it very carefully how do we back off in case of quota exceeded. If we continue with requests it can cause waste load and account lock in specific cases.  
-Distributed quota management service is a solution but what if this is not a case? Chose one of the following limiters and your preferred backoff algorithm if needed.
+Pick one of the rate limiters and a preferred exponential backoff algorithm to throttle requests and control quota.
 
 ## Equalizer
-Equalizer provides the ability to manage quota based on previous responses and slow down or accelerate accordingly. It uses a bitmap of variable size which is quick and efficient.
+The Equalizer is a rate limiter that manages quota based on previous requests' statuses and slows down or accelerates accordingly.
 
 ### Usage
 ```go
-offset := NewRandomOffset(96)
-eq := NewEqualizer(96, 16, offset)
+offset := equalizer.NewRandomOffset(96)
 
-//claim quota
-haveQuota := eq.Claim()
+// an Equalizer with the bitmap size of 96 with 16 reserved
+// positive bits and the random offset manager
+eq := equalizer.NewEqualizer(96, 16, offset)
 
-//nofify equalizer
+// quota request
+haveQuota := eq.Ask()
+
+// update equalizer with ten previous successful requests
 eq.Notify(true, 10)
 ```
 
-### Benchmark results
+### Equalizer rate limiter benchmarks
 ```go
-BenchmarkEqualizerShortClaimStep-8      10000000               144 ns/op               0 B/op          0 allocs/op
-BenchmarkEqualizerShortClaimRandom-8    10000000               155 ns/op               0 B/op          0 allocs/op
-BenchmarkEqualizerShortNotify-8          5000000               266 ns/op               0 B/op          0 allocs/op
-BenchmarkEqualizerLongClaimStep-8       10000000               143 ns/op               0 B/op          0 allocs/op
-BenchmarkEqualizerLongClaimRandom-8     10000000               146 ns/op               0 B/op          0 allocs/op
-BenchmarkEqualizerLongNotify-8             30000             48446 ns/op               0 B/op          0 allocs/op
+BenchmarkEqualizerShortAskStep-16       30607452                37.5 ns/op             0 B/op          0 allocs/op
+BenchmarkEqualizerShortAskRandom-16     31896340                34.5 ns/op             0 B/op          0 allocs/op
+BenchmarkEqualizerShortNotify-16        12715494                81.9 ns/op             0 B/op          0 allocs/op
+BenchmarkEqualizerLongAskStep-16        34627239                35.4 ns/op             0 B/op          0 allocs/op
+BenchmarkEqualizerLongAskRandom-16      32399748                34.0 ns/op             0 B/op          0 allocs/op
+BenchmarkEqualizerLongNotify-16            59935               20343 ns/op             0 B/op          0 allocs/op
 ```
 
 ## Slider
-Sliding window based rate limiter.
+The Slider rate limiter is based on a sliding window with a specified quota capacity.
 
 ### Usage
 ```go
-//slider with 1 second window size, 100 millis sliding interval and capacity of 32
-slider := NewSlider(time.Second, time.Millisecond*100, 32)
+// a Slider with one second window size, 100 millis sliding interval
+// and the capacity of 32
+slider := equalizer.NewSlider(time.Second, time.Millisecond*100, 32)
 
-//claim quota
-haveQuota := slider.Claim()
+// quota request
+haveQuota := slider.Ask()
 ```
 
-## Token bucket
-Custom implementation for token bucket rate limiter with refill interval.
+## TokenBucket
+The TokenBucket rate limiter is based on the token bucket algorithm with a refill interval.
 
 ### Usage
 ```go
-//bucket with capacity of 32 and 100 millis refill interval
-tokenBucket := NewTokenBucket(32, time.Millisecond*100)
+// a TokenBucket with the capacity of 32 and 100 millis refill interval
+tokenBucket := equalizer.NewTokenBucket(32, time.Millisecond*100)
 
-//claim quota
-haveQuota := tokenBucket.Claim()
+// quota request
+haveQuota := tokenBucket.Ask()
 ```
 
 ## License
