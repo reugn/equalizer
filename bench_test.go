@@ -4,22 +4,22 @@ import (
 	"testing"
 )
 
-//go test -bench=. -benchmem
-func BenchmarkEqualizerShortClaimStep(b *testing.B) {
+// go test -bench=. -benchmem
+func BenchmarkEqualizerShortAskStep(b *testing.B) {
 	offset := NewStepOffset(96, 1)
 	eq := NewEqualizer(96, 16, offset)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		eq.Claim()
+		eq.Ask()
 	}
 }
 
-func BenchmarkEqualizerShortClaimRandom(b *testing.B) {
+func BenchmarkEqualizerShortAskRandom(b *testing.B) {
 	offset := NewRandomOffset(96)
 	eq := NewEqualizer(96, 16, offset)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		eq.Claim()
+		eq.Ask()
 	}
 }
 
@@ -32,21 +32,21 @@ func BenchmarkEqualizerShortNotify(b *testing.B) {
 	}
 }
 
-func BenchmarkEqualizerLongClaimStep(b *testing.B) {
+func BenchmarkEqualizerLongAskStep(b *testing.B) {
 	offset := NewStepOffset(1048576, 1)
 	eq := NewEqualizer(1048576, 16, offset)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		eq.Claim()
+		eq.Ask()
 	}
 }
 
-func BenchmarkEqualizerLongClaimRandom(b *testing.B) {
+func BenchmarkEqualizerLongAskRandom(b *testing.B) {
 	offset := NewRandomOffset(1048576)
 	eq := NewEqualizer(1048576, 16, offset)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		eq.Claim()
+		eq.Ask()
 	}
 }
 
