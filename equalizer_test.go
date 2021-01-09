@@ -14,10 +14,10 @@ func TestEqualizer(t *testing.T) {
 	eq.Notify(false, 50)
 	assertEqual(t, eq.tape.Text(2), "111111111111111111111111111111111111111111111100000000000000000000000000000000000000000000000000")
 
-	assertEqual(t, eq.Claim(), false)
-	assertEqual(t, eq.Claim(), false)
-	assertEqual(t, eq.Claim(), false)
-	assertEqual(t, eq.Claim(), true)
+	assertEqual(t, eq.Ask(), false)
+	assertEqual(t, eq.Ask(), false)
+	assertEqual(t, eq.Ask(), false)
+	assertEqual(t, eq.Ask(), true)
 
 	eq.Notify(true, 10)
 	assertEqual(t, eq.tape.Text(2), "111111111111111111111111111111111111000000000000000000000000000000000000000000000000001111111111")
@@ -25,7 +25,7 @@ func TestEqualizer(t *testing.T) {
 	eq.Notify(false, 1)
 	assertEqual(t, eq.tape.Text(2), "111111111111111111111111111111111110000000000000000000000000000000000000000000000000011111111110")
 
-	eq.Fill()
+	eq.ResetPositive()
 	assertEqual(t, eq.tape.Text(2), "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")
 
 	eq.Reset()
