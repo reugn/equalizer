@@ -65,8 +65,7 @@ func (tb *tokenBucket) fillTokenBucket(capacity int) {
 
 // refill refills the token bucket.
 func (tb *tokenBucket) refill() {
-	issued := atomic.LoadInt32(&tb.issued)
-	atomic.StoreInt32(&tb.issued, 0)
+	issued := atomic.SwapInt32(&tb.issued, 0)
 	tb.fillTokenBucket(int(issued))
 }
 
