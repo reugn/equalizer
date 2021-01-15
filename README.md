@@ -7,10 +7,13 @@
 </p>
 <p align="center">A rate limiters package for Go.</p>
 
-Pick one of the rate limiters and a preferred exponential backoff algorithm to throttle requests and control quota.
+Pick one of the rate limiters to throttle requests and control quota.
+* [Equalizer](#equalizer)
+* [Slider](#slider)
+* [TokenBucket](#tokenbucket)
 
 ## Equalizer
-The Equalizer is a rate limiter that manages quota based on previous requests' statuses and slows down or accelerates accordingly.
+`Equalizer` is a rate limiter that manages quota based on previous requests' statuses and slows down or accelerates accordingly.
 
 ### Usage
 ```go
@@ -20,15 +23,15 @@ offset := equalizer.NewRandomOffset(96)
 // positive bits and the random offset manager
 eq := equalizer.NewEqualizer(96, 16, offset)
 
-// quota request
+// non-blocking quota request
 haveQuota := eq.Ask()
 
-// update equalizer with ten previous successful requests
+// update with ten previous successful requests
 eq.Notify(true, 10)
 ```
 
-### Equalizer rate limiter benchmarks
-```go
+### Benchmarks
+```sh
 BenchmarkEqualizerShortAskStep-16       30607452                37.5 ns/op             0 B/op          0 allocs/op
 BenchmarkEqualizerShortAskRandom-16     31896340                34.5 ns/op             0 B/op          0 allocs/op
 BenchmarkEqualizerShortNotify-16        12715494                81.9 ns/op             0 B/op          0 allocs/op
@@ -38,7 +41,8 @@ BenchmarkEqualizerLongNotify-16            59935               20343 ns/op      
 ```
 
 ## Slider
-The Slider rate limiter is based on a sliding window with a specified quota capacity.
+`Slider` rate limiter is based on a sliding window with a specified quota capacity.
+Implements the `Limiter` interface.
 
 ### Usage
 ```go
@@ -46,20 +50,39 @@ The Slider rate limiter is based on a sliding window with a specified quota capa
 // and the capacity of 32
 slider := equalizer.NewSlider(time.Second, time.Millisecond*100, 32)
 
-// quota request
+// non-blocking quota request
 haveQuota := slider.Ask()
+
+// blocking call
+slider.Take()
+```
+
+### Benchmarks
+```sh
+BenchmarkSliderShortWindow-16           123488035                9.67 ns/op            0 B/op          0 allocs/op
+BenchmarkSliderLongerWindow-16          128023276                9.76 ns/op            0 B/op          0 allocs/op
 ```
 
 ## TokenBucket
-The TokenBucket rate limiter is based on the token bucket algorithm with a refill interval.
+`TokenBucket` rate limiter is based on the token bucket algorithm with a refill interval.
+Implements the `Limiter` interface.
 
 ### Usage
 ```go
 // a TokenBucket with the capacity of 32 and 100 millis refill interval
 tokenBucket := equalizer.NewTokenBucket(32, time.Millisecond*100)
 
-// quota request
+// non-blocking quota request
 haveQuota := tokenBucket.Ask()
+
+// blocking call
+tokenBucket.Take()
+```
+
+### Benchmarks
+```sh
+BenchmarkTokenBucketDenseRefill-16      212631714                5.64 ns/op            0 B/op          0 allocs/op
+BenchmarkTokenBucketSparseRefill-16     211491368                5.63 ns/op            0 B/op          0 allocs/op
 ```
 
 ## License
